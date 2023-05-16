@@ -15,13 +15,25 @@ class HomePage extends StatelessWidget {
           child: Wrap(
             children: [
               ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/example/bloc');
-                  },
-                  child: Text('Example')),
-              ElevatedButton(onPressed: () {}, child: Text('Example Freezed')),
-              ElevatedButton(onPressed: () {}, child: Text('Contacts')),
-              ElevatedButton(onPressed: () {}, child: Text('Contact Cubit')),
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/example/bloc');
+                },
+                child: const Text('Example'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/bloc/example/freezed');
+                },
+                child: const Text('Example Freezed'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Contacts'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Contact Cubit'),
+              ),
             ],
           ),
         ),
