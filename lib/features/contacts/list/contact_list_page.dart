@@ -79,6 +79,7 @@ class ContactListPage extends StatelessWidget {
                                 onTap: () => Navigator.pushNamed(
                                   context,
                                   '/contacts/update',
+                                  arguments: contact,
                                 ),
                                 title: Text(contact.name),
                                 subtitle: Text(contact.email),

@@ -19,7 +19,7 @@ class ContactsRepository {
 
   Future<void> update(ContactModel model) async {
     Dio().put(
-      'http://127.0.0.1:8080/contacts${model.id}',
+      'http://127.0.0.1:8080/contacts/${model.id}',
       data: model.toMap(),
     );
   }
