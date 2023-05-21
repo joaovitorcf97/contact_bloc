@@ -1,9 +1,9 @@
-import 'package:contact_bloc/features/contacts/update/bloc/bloc/contact_update_bloc.dart';
 import 'package:contact_bloc/models/contact_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../widgets/loader.dart';
+import 'bloc/contact_update_bloc.dart';
 
 class ContactUpdatePage extends StatefulWidget {
   final ContactModel contactModel;
@@ -42,62 +42,87 @@ class _ContactUpdatePageState extends State<ContactUpdatePage> {
       appBar: AppBar(
         title: const Text('Updade contact'),
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _nameEC,
-                decoration: const InputDecoration(
-                  label: Text('Nome'),
+      body: BlocListener<ContactUpdateBloc, ContactUpdateState>(
+        listenWhen: (previous, current) {
+          return current.maybeWhen(
+            success: () => true,
+            error: (_) => true,
+            orElse: () => false,
+          );
+        },
+        listener: (context, state) {
+          state.whenOrNull(
+            success: () => Navigator.of(context).pop(),
+            error: (message) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    message,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: Colors.red,
                 ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Nome obrigatorio';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _emailEC,
-                decoration: const InputDecoration(
-                  label: Text('E-mail'),
+              );
+            },
+          );
+        },
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _nameEC,
+                  decoration: const InputDecoration(
+                    label: Text('Nome'),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nome obrigatorio';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'E-mail obrigatorio';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  final validate = _formKey.currentState?.validate() ?? false;
+                TextFormField(
+                  controller: _emailEC,
+                  decoration: const InputDecoration(
+                    label: Text('E-mail'),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'E-mail obrigatorio';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    final validate = _formKey.currentState?.validate() ?? false;
 
-                  if (validate) {
-                    context.read<ContactUpdateBloc>().add(
-                          ContactUpdateEvent.save(
-                            id: widget.contactModel.id!,
-                            name: _nameEC.text,
-                            email: _emailEC.text,
-                          ),
-                        );
-                  }
-                },
-                child: const Text('Salvar'),
-              ),
-              Loader<ContactUpdateBloc, ContactUpdateState>(
-                selector: (state) {
-                  return state.maybeWhen(
-                    loading: () => true,
-                    orElse: () => false,
-                  );
-                },
-              ),
-            ],
+                    if (validate) {
+                      context.read<ContactUpdateBloc>().add(
+                            ContactUpdateEvent.save(
+                              id: widget.contactModel.id!,
+                              name: _nameEC.text,
+                              email: _emailEC.text,
+                            ),
+                          );
+                    }
+                  },
+                  child: const Text('Salvar'),
+                ),
+                Loader<ContactUpdateBloc, ContactUpdateState>(
+                  selector: (state) {
+                    return state.maybeWhen(
+                      loading: () => true,
+                      orElse: () => false,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
